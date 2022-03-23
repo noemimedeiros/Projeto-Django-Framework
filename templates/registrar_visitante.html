@@ -20,7 +20,7 @@
                 </small>
             </p>
 
-            <form action="post">
+            <form method="post">
                 <div class="form-row">
                     {% csrf_token %}
 
@@ -31,6 +31,13 @@
                         </div>
                     {% endfor %}
                 </div>
+
+                <div class="text-right">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="text">Registrar Visitante</span>
+                    </button>
+                </div>
+                
             </form>
         </div>
     </div>
