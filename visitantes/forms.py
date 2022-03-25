@@ -25,3 +25,18 @@ class VisitanteForm(forms.ModelForm):
                 "required": "O número da casa do visitante é obrigatório para o registro"
             },
         }
+
+class AutorizaVisitanteForm(forms.ModelForm):
+    morador_responsavel = forms.CharField(required=True)
+
+    class Meta:
+        model = Visitante
+        fields = [
+            "morador_responsavel"
+        ]
+
+        error_messages = {
+            "morador_responsavel": {
+                "required": "Por favor, informe o nome do morador responsável por autorizar a entrada do visitante"
+            }  
+        }
