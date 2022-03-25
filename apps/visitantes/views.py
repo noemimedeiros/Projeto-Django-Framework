@@ -2,10 +2,14 @@ from django.contrib import messages
 from django.shortcuts import (
     render, redirect, get_object_or_404
 )
+from django.http import HttpResponseNotAllowed
+from django.utils import timezone
+
 from visitantes.models import Visitante
 from visitantes.forms import (
     VisitanteForm, AutorizaVisitanteForm
 )
+
 
 def registrar_visitante(request):
 
@@ -50,7 +54,12 @@ def informacoes_visitante(request, id):
         )
 
     if form.is_valid():
-        form.save()
+        visitante = form.save(commit=False)
+
+        visitante.status = "EM_VISITA"
+        visitante.horario_autorizacao = timezone.now()
+
+        visitante.save()
 
         messages.success(
             request,
@@ -67,3 +76,29 @@ def informacoes_visitante(request, id):
     }
 
     return render(request, "informacoes_visitante.html", context)
+
+def finalizar_visita(request, id):
+
+    if request.method == "POST":
+        visitante = get_object_or_404(
+            Visitante,
+            id=id
+        )
+
+        visitante.status = "FINALIZADO"
+        visitante.horario_saida = timezone.now()
+
+        visitante.save()
+
+        messages.success(
+            request,
+            "Visita finalizada com sucesso"
+        )
+        
+        return redirect("index")
+    
+    else:
+        return HttpResponseNotAllowed(
+            ["POST"],
+            "Método não permitido"
+        )
